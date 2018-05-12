@@ -1,7 +1,7 @@
 import time
 import cv2
 import numpy as np
-from grab_image import grab_screen
+from grabber import grab_screen
 
 def auto_canny_params(image, sigma=0.33):
     v = np.median(image)

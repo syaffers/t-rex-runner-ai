@@ -1,7 +1,7 @@
 import time
 import numpy as np
 import cv2
-from grab_image import grab_screen
+from grabber import grab_screen
 from pykeyboard import PyKeyboard
 
 
