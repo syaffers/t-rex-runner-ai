@@ -2,14 +2,7 @@ import time
 import cv2
 import numpy as np
 from grabber import grab_screen
-
-def auto_canny_params(image, sigma=0.33):
-    v = np.median(image)
-
-    lower = int(max(0, (1.0 - sigma) * v))
-    upper = int(max(255, (1.0 + sigma) * v))
-
-    return lower, upper
+from image_tricks import auto_canny_params
 
 x, y = 383, 173
 # time.sleep(5)

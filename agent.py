@@ -1,17 +1,9 @@
 import time
 import numpy as np
 import cv2
-from grabber import grab_screen
 from pykeyboard import PyKeyboard
-
-
-def auto_canny_params(image, sigma=0.33):
-    v = np.median(image)
-
-    lower = int(max(0, (1.0 - sigma) * v))
-    upper = int(max(255, (1.0 + sigma) * v))
-
-    return lower, upper
+from grabber import grab_screen
+from image_tricks import auto_canny_params
 
 
 def process_image(image, keyboard, offset=66):
