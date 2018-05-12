@@ -18,7 +18,7 @@ def process_image(image, keyboard, offset=66):
     work_image = np.array(image)
 
     image_gray = cv2.cvtColor(work_image, cv2.COLOR_RGB2GRAY)
-    image_gray[:, :66] = 255
+    image_gray[:, :offset] = 255
 
     image_blur = cv2.GaussianBlur(image_gray, (7, 7), 0)
 
@@ -28,19 +28,36 @@ def process_image(image, keyboard, offset=66):
     _, contours, _ = cv2.findContours(
         image_edge, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    closest = 600
+    closest_x = 600
+    closest_y = 0
     for contour in contours:
-        x, y, w, h = cv2.boundingRect(contour)
+        box_x, box_y, box_w, box_h = cv2.boundingRect(contour)
 
-        if w + h > 10:
-            cv2.rectangle(work_image, (x, y), (x + w, y + h), (0, 128, 0), 2)
+        if box_w + box_h > 10:
+            cv2.rectangle(work_image,
+                          (box_x, box_y),
+                          (box_x + box_w, box_y + box_h),
+                          (0, 128, 0), 2)
 
-            if x < closest:
-                closest = x
+            if box_x < closest_x:
+                closest_x = box_x
 
-    if (closest - offset) < 60:
+            if (box_y + box_h) > closest_y:
+                closest_y = box_y + box_h
+
+    register_jump = False
+
+    if (closest_x - offset) < 70:
+        register_jump = True
+
+    if closest_y < 92:
+        register_jump = False
+
+    print(closest_y)
+
+    if register_jump:
         keyboard.press_key(' ')
-        time.sleep(0.01)
+        time.sleep(0.15)
         keyboard.release_key(' ')
 
     return work_image
