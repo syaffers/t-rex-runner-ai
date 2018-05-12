@@ -45,9 +45,8 @@ def process_image(image, keyboard, offset=66):
     if closest_y < 92:
         register_jump = False
 
-    print(closest_y)
-
     if register_jump:
+        # HACK: Needs to be event-based triggering
         keyboard.press_key(' ')
         time.sleep(0.15)
         keyboard.release_key(' ')
