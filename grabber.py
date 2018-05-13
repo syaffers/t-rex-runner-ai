@@ -1,3 +1,6 @@
+# Source: https://stackoverflow.com/questions/69645/take-a-screenshot-via-a-python-script-linux
+# by JHolta
+
 import ctypes
 import os
 import time
