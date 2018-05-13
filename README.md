@@ -1,6 +1,7 @@
 # Adventures into AI: the Chrome T-Rex Runner
 
-Tested on Ubuntu 16.04, with Python 3.5.4, OpenCV 3.1.0.
+Tested on Ubuntu 16.04, with Python 3.5.4, OpenCV 3.1.0. Likely **not** to work
+on Windows or Mac OSX.
 
 ## Quickstart
 
@@ -17,9 +18,9 @@ this already coded-in.
 
 Run the agent, point to your browser window and run the game (you might want to
 adjust the `x` and `y` position of the screen capture window to adapt for your
-monitor in `agent.py`).
+monitor in `agent_cv.py`).
 
-    python agent.py
+    python agent_cv.py
 
 ## Dependencies
 
@@ -31,8 +32,10 @@ this project is found at [wayou's GitHub project](https://github.com/wayou/t-rex
 The AI also uses typical Python libraries for matrix manipulations and keypress
 interfaces:
 
-- `numpy >= 1.12`
-- PyUserInput `== 0.1.11`
+- `numpy >= 1.12`: matrix handling
+- `opencv >= 3.1.0`: fast image processing
+- PyUserInput `== 0.1.11`: user input to global windows
+- `pyxhook` for Python 3: global user inputs for X11 environment
 
 ## How it Works
 

@@ -48,3 +48,10 @@ while True:
     if cv2.waitKey(25) & 0xFF == ord('q'):
         cv2.destroyAllWindows()
         break
+
+#########################
+# EXPLORE COLLECTED DATA
+#########################
+data = np.load('data/training_half.npz')
+images = data['images']
+targets = data['targets']
