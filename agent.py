@@ -12,8 +12,10 @@ class CVAgent(object):
         self.register_jump = False
         self.jump_frames = 0
         self.keyboard = PyKeyboard()
+        self.last_closest_x = 0
+        self.last_closest_y = 0
 
-    def long_press_space(self):
+    def long_press_key(self, key):
         """ Kind-of async long-press jump function. Agent will press space for
         a few frames before letting go, simulating a long-press.
         """
@@ -21,18 +23,21 @@ class CVAgent(object):
         if self.jump_frames <= 0 and self.is_key_pressed:
             self.is_key_pressed = False
             self.register_jump = False
-            self.keyboard.release_key(' ')
+            self.keyboard.release_key(key)
             return
 
         if not self.is_key_pressed:
             self.is_key_pressed = True
-            self.keyboard.press_key(' ')
+            self.keyboard.press_key(key)
             return
 
         return
 
     def jump(self, closest_x, closest_y, offset):
-        """ Jump function to separate image processing and agent logic """
+        """ Jump function to separate image processing and agent logic. Agent
+        shouldn't be able to register any actions if an action is currently
+        being run (hence why we have those `not self.is_key_pressed`)
+        """
         if (closest_x - offset) < 72 and not self.is_key_pressed:
             self.register_jump = True
             self.jump_frames = 5
@@ -41,7 +46,7 @@ class CVAgent(object):
             self.register_jump = False
 
         if self.register_jump:
-            self.long_press_space()
+            self.long_press_key(' ')
 
     def process_image(self, image, offset=66):
         """ Agent image processing routine """
@@ -96,6 +101,14 @@ class CVAgent(object):
                 if (box_y + box_h) > closest_y:
                     closest_y = box_y + box_h
 
+        velocity_x = self.last_closest_x - closest_x
+        cv2.putText(work_image, str(velocity_x), (20, 20), font, 1,
+                    (0, 255, 0))
+
+        self.last_closest_x = closest_x
+        self.last_closest_y = closest_y
+
+        # Let's jump!
         self.jump(closest_x, closest_y, offset)
 
         return work_image
