@@ -15,13 +15,13 @@ from image_tricks import auto_canny_params
 ##############
 # LOGIC STUFF
 ##############
-im = cv2.imread('test.png')
+im = cv2.imread('assets/test.png')
 
 image = np.array(im)
 image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 image_gray[:, :66] = 255
 
-go_template = cv2.imread('go_template.png')
+go_template = cv2.imread('assets/go_template.png')
 go_template = cv2.cvtColor(go_template, cv2.COLOR_BGR2GRAY)
 
 res = cv2.matchTemplate(image_gray, go_template, cv2.TM_SQDIFF)

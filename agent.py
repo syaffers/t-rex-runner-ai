@@ -58,7 +58,7 @@ class CVAgent(object):
         font = cv2.FONT_HERSHEY_PLAIN
 
         # Game over template.
-        go_template = cv2.imread('go_template.png')
+        go_template = cv2.imread('assets/go_template.png')
         go_template = cv2.cvtColor(go_template, cv2.COLOR_BGR2GRAY)
 
         # Template matching.
@@ -120,13 +120,13 @@ if __name__ == "__main__":
         print(i+1)
         time.sleep(1)
 
+    x, y = 383, 173
     main_window_name = "Agent"
     cv2.namedWindow(main_window_name)
     cv2.moveWindow(main_window_name, 150, 400)
     agent = CVAgent()
 
     while True:
-        x, y = 660, 173
         im = grab_screen(x, y, x + 600, y + 150)
 
         im_processed = agent.process_image(im)

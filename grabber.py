@@ -1,9 +1,9 @@
 import ctypes
 import os
+import time
 import cv2
 import numpy as np
 from PIL import Image
-import time
 
 lib_name = 'prtscn.so'
 abs_path_lib = os.path.join(
