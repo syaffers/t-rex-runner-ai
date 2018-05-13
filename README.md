@@ -28,6 +28,12 @@ is no internet connectivity. But there are open-source versions thanks to the
 [Chromium project](https://www.chromium.org/) and the distribution used for
 this project is found at [wayou's GitHub project](https://github.com/wayou/t-rex-runner/).
 
+The AI also uses typical Python libraries for matrix manipulations and keypress
+interfaces:
+
+- `numpy >= 1.12`
+- PyUserInput `== 0.1.11`
+
 ## How it Works
 
 It's a simple computer vision AI which finds the bounding boxes of approaching
