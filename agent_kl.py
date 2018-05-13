@@ -1,4 +1,5 @@
 import time
+import datetime
 import cv2
 import numpy as np
 from grabber import grab_screen
@@ -47,9 +48,13 @@ if __name__ == "__main__":
 
     action_lut = {
         "space": [1, 0, 0],
+        "up": [1, 0, 0],
         "down": [0, 1, 0],
         "none": [0, 0, 1],
     }
+
+    timestamp = datetime.datetime.now()
+    prefix = timestamp.strftime("%Y%m%d%H%M%S")
 
     x_train = []
     y_train = []
@@ -64,17 +69,12 @@ if __name__ == "__main__":
 
             if len(x_train) % 1000 == 0:
                 print(len(x_train))
-                np.savez('data/training_half_2.npz',
+                np.savez('data/{}_training_half.npz'.format(prefix),
                          images=np.array(x_train),
                          targets=np.array(y_train))
 
-
             # This needs to be here! Too fast and the OS will crash.
             time.sleep(1/100)
-
-            if (cv2.waitKey(1) & 0xFF) == ord('q'):
-                cv2.destroyAllWindows()
-                break
 
     except KeyboardInterrupt:
         cv2.destroyAllWindows()
