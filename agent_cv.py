@@ -101,10 +101,6 @@ class CVAgent(object):
                 if (box_y + box_h) > closest_y:
                     closest_y = box_y + box_h
 
-        velocity_x = self.last_closest_x - closest_x
-        cv2.putText(work_image, str(velocity_x), (20, 20), font, 1,
-                    (0, 255, 0))
-
         self.last_closest_x = closest_x
         self.last_closest_y = closest_y
 
