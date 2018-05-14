@@ -31,7 +31,7 @@ class KeyListeningAgent(object):
         image_gray = cv2.bitwise_not(image_gray)
         # Resize for neural net.
         image_resize = cv2.resize(
-            image_gray, (image_gray.shape[1] // 2, image_gray.shape[0] // 2),
+            image_gray, (image_gray.shape[1] // 4, image_gray.shape[0] // 4),
             interpolation=cv2.INTER_NEAREST)
 
         return image_resize
@@ -58,6 +58,7 @@ if __name__ == "__main__":
 
     x_train = []
     y_train = []
+    batch = 0
 
     try:
         while True:
@@ -67,11 +68,15 @@ if __name__ == "__main__":
             x_train.append(im_processed)
             y_train.append(action_lut.get(agent.pressed_key))
 
-            if len(x_train) % 1000 == 0:
+            if len(x_train) % 500 == 0:
                 print(len(x_train))
-                np.savez('data/{}_training_half.npz'.format(prefix),
-                         images=np.array(x_train),
-                         targets=np.array(y_train))
+                batch += 1
+                save_path = 'data/{}_training_qrtr_{}_{}.npy'
+                np.save(save_path.format(prefix, "%03d" % batch, "x"), x_train)
+                np.save(save_path.format(prefix, "%03d" % batch, "y"), y_train)
+
+                x_train = []
+                y_train = []
 
             # This needs to be here! Too fast and the OS will crash.
             time.sleep(1/100)

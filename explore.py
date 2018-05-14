@@ -58,15 +58,16 @@ images, targets = None, None
 for filename in sorted(os.listdir(data_path)):
     data = np.load(os.path.join(data_path, filename))
 
-    if images is None:
-        images = data['images']
+    if '_x' in filename:
+        if images is None:
+            images = data
+        else:
+            images = np.vstack([images, data])
     else:
-        images = np.vstack([images, data['images']])
-
-    if targets is None:
-        targets = data['targets']
-    else:
-        targets = np.vstack([targets, data['targets']])
+        if targets is None:
+            targets = data
+        else:
+            targets = np.vstack([targets, data])
 
 del data
 

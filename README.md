@@ -50,8 +50,9 @@ objects flying higher than the T-rex.
 
 The KL Agent is not a game playing-agent, but instead is a data collection
 agent which interfaces with the user inputs as they play the game. The agent
-collects grayscale images of the game area and the corresponding action at that
-frame
+collects grayscale images of the game area (sized down to quarter size) and the
+corresponding action at that frame. ~~The images and action vectors are then
+stored in an `.npz` file.~~ Saving as `.npy` files are more performant.
 
 ## Wishlist
 
