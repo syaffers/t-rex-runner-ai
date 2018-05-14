@@ -8,7 +8,9 @@ import numpy as np
 ####################
 # GRAB A SCREENSHOT
 ####################
-# x, y = 660, 173
+# x = 383  # 720p screen
+# x = 660  # 1080p screen
+# y = 173
 # time.sleep(5)
 # im = grab_screen(x, y, x + 600, y + 150)
 # cv2.imwrite('gameover4.png', np.array(im))

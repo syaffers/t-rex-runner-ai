@@ -43,7 +43,9 @@ if __name__ == "__main__":
         print(i+1)
         time.sleep(1)
 
-    x, y = 383, 173
+    # x = 383  # 720p screen
+    x = 660  # 1080p screen
+    y = 173
     agent = KeyListeningAgent()
 
     action_lut = {

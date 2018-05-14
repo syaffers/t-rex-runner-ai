@@ -116,7 +116,9 @@ if __name__ == "__main__":
         print(i+1)
         time.sleep(1)
 
-    x, y = 383, 173
+    # x = 383  # 720p screen
+    x = 660  # 1080p screen
+    y = 173
     main_window_name = "Agent"
     cv2.namedWindow(main_window_name)
     cv2.moveWindow(main_window_name, 150, 400)
