@@ -2,6 +2,7 @@ import time
 import numpy as np
 import cv2
 from pykeyboard import PyKeyboard
+from config import FRAME_X, FRAME_Y
 from grabber import grab_screen
 from image_tricks import auto_canny_params
 
@@ -111,21 +112,18 @@ class CVAgent(object):
 
 
 if __name__ == "__main__":
+    agent = CVAgent()
+    main_window_name = "CompVisionAgent"
+    cv2.namedWindow(main_window_name)
+    cv2.moveWindow(main_window_name, 150, 400)
+
     print("Starting!")
     for i in range(5)[::-1]:
         print(i+1)
         time.sleep(1)
 
-    # x = 383  # 720p screen
-    x = 660  # 1080p screen
-    y = 173
-    main_window_name = "Agent"
-    cv2.namedWindow(main_window_name)
-    cv2.moveWindow(main_window_name, 150, 400)
-    agent = CVAgent()
-
     while True:
-        im = grab_screen(x, y, x + 600, y + 150)
+        im = grab_screen(FRAME_X, FRAME_Y, FRAME_X + 600, FRAME_Y + 150)
 
         im_processed = agent.process_image(im)
         cv2.imshow(main_window_name, im_processed)

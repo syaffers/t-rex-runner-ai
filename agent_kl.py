@@ -2,6 +2,7 @@ import time
 import datetime
 import cv2
 import numpy as np
+from config import FRAME_X, FRAME_Y
 from grabber import grab_screen
 from pyxhook import HookManager
 
@@ -38,14 +39,6 @@ class KeyListeningAgent(object):
 
 
 if __name__ == "__main__":
-    print("Starting!")
-    for i in range(5)[::-1]:
-        print(i+1)
-        time.sleep(1)
-
-    # x = 383  # 720p screen
-    x = 660  # 1080p screen
-    y = 173
     agent = KeyListeningAgent()
 
     action_lut = {
@@ -62,9 +55,14 @@ if __name__ == "__main__":
     y_train = []
     batch = 0
 
+    print("Starting!")
+    for i in range(5)[::-1]:
+        print(i+1)
+        time.sleep(1)
+
     try:
         while True:
-            im = grab_screen(x, y, x + 600, y + 150)
+            im = grab_screen(FRAME_X, FRAME_Y, FRAME_X + 600, FRAME_Y + 150)
             im_processed = agent.process_image(im)
 
             x_train.append(im_processed)
@@ -81,7 +79,7 @@ if __name__ == "__main__":
                 y_train = []
 
             # This needs to be here! Too fast and the OS will crash.
-            time.sleep(1/100)
+            time.sleep(1/100.)
 
     except KeyboardInterrupt:
         cv2.destroyAllWindows()

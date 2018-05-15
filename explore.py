@@ -4,15 +4,14 @@ import cv2
 import numpy as np
 # from grabber import grab_screen
 # from image_tricks import auto_canny_params
+# from config import FRAME_X, FRAME_Y
 
 ####################
 # GRAB A SCREENSHOT
 ####################
-# x = 383  # 720p screen
-# x = 660  # 1080p screen
 # y = 173
 # time.sleep(5)
-# im = grab_screen(x, y, x + 600, y + 150)
+# im = grab_screen(FRAME_X, FRAME_Y, FRAME_X + 600, FRAME_Y + 150)
 # cv2.imwrite('gameover4.png', np.array(im))
 
 ##############
@@ -75,13 +74,14 @@ del data
 
 font = cv2.FONT_HERSHEY_PLAIN
 
-for i, t in zip(images[-5000:], targets[-5000:]):
-    img = cv2.putText(i, str(t), (20, 20), font, 1, (0xFF, 0xFF, 0xFF), 2)
+for i, t in zip(images[-500:], targets[-500:]):
+    img = cv2.putText(i, str(t), (20, 20), font, 1, (0xFF, 0xFF, 0xFF), 1)
     cv2.imshow('window', i)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        cv2.destroyAllWindows()
         break
 
-    time.sleep(1/60.)
+    time.sleep(1/90.)
 
 cv2.destroyAllWindows()
