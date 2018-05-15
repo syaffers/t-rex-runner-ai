@@ -17,8 +17,8 @@ sure you add a delay using `time.sleep()` to prevent crashes. `agent_cv.py` has
 this already coded-in.
 
 Run the agent, point to your browser window and run the game (you might want to
-adjust the `x` and `y` position of the screen capture window to adapt for your
-monitor in `agent_cv.py`).
+adjust the `FRAME_X` and `FRAME_Y` position of the screen capture window to
+adapt for your monitor in `config.py`).
 
     python agent_cv.py
 
@@ -45,6 +45,15 @@ The CV Agent a simple computer vision AI which finds the bounding boxes of
 approaching objects. If a cactus or a pterodactyl comes close enough to T-rex,
 the agent will press `Space` to indicate a jumping action. It also accounts for
 objects flying higher than the T-rex.
+
+### Convolutional Net (CN) Agent
+
+The CN agent uses labelled images to predict the action on a particular frame.
+Using the training data collected by the KL agent, we have an image-action pair
+which can be subjected to a normal supervised learning optimization. Currently,
+no time-based measures are taken (i.e. convolving over time on multiple
+consecutive frames). The agent also shows the confidence of the predictions as
+bar plots on the top-left hand corner of the agent screen.
 
 ### Keyboard-Logging (KL) Agent
 
