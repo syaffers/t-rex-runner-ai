@@ -33,6 +33,8 @@ The AI also uses typical Python libraries for matrix manipulations and keypress
 interfaces:
 
 - `numpy >= 1.12`: matrix handling
+- `keras == 2.1.6`: deep learning library.
+*Important: the models can only be loaded on this version of Keras.*
 - `opencv >= 3.1.0`: fast image processing
 - PyUserInput `== 0.1.11`: automating user input to global windows
 - `pyxhook` for Python 3: global user inputs capturing for X11 environment
@@ -69,6 +71,7 @@ This started as a OpenCV weekend exercise which went real. I want to see what
 the limits of ML are just based on captured images, rather than having
 "physics data" from the actual game. Things I'd like to try out:
 
-- Train an agent via supervised learning using ~50000 images.
-- Train a convolutional neural network to predict the actions. Possibly with
-  policy gradients.
+- [x] Train an OpenCV agent. *Implemented `agent_cv.py`.*
+- [x] Train a conv net with supervised learning using ~50000 images.
+*Implemented `agent_cn.py` and the `DinoBot.h5` Keras model.*
+- [ ] Train a conv net with policy gradients.
