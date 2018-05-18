@@ -74,14 +74,25 @@ del data
 
 font = cv2.FONT_HERSHEY_PLAIN
 
-for i, t in zip(images[-500:], targets[-500:]):
-    img = cv2.putText(i, str(t), (20, 20), font, 1, (0xFF, 0xFF, 0xFF), 1)
-    cv2.imshow('window', i)
+fps = 30
+last_n = -1000
+for i, t in zip(images[last_n:], targets[last_n:]):
+    img = cv2.putText(i, str(fps), (10, 10), font, 1, (0xFF, 0xFF, 0xFF), 1)
+    img = cv2.putText(i, str(t), (60, 10), font, 1, (0xFF, 0xFF, 0xFF), 1)
+    cv2.imshow('window', cv2.resize(i, (600, 150), interpolation=cv2.INTER_NEAREST))
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    kp = cv2.waitKey(1) & 0xFF
+
+    if kp == ord('q'):
         cv2.destroyAllWindows()
         break
 
-    time.sleep(1/90.)
+    if kp == ord('w'):
+        fps += 5.
+
+    if kp == ord('s'):
+        fps -= 5.
+
+    time.sleep(1/fps)
 
 cv2.destroyAllWindows()

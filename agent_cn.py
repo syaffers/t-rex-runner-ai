@@ -8,25 +8,30 @@ from grabber import grab_screen
 
 
 class ConvNetAgent(object):
-    def __init__(self):
+    def __init__(self, model_path):
         self.action_lut = ['Jump', 'Duck', 'Run']
         self.action_colors = [
             (0, 128, 0),
             (0, 0, 255),
             (255, 0, 0)
         ]
-        self.conv_net = keras.models.load_model('DinoBot.h5')
+        self.conv_net = keras.models.load_model(model_path)
         self.keyboard = PyKeyboard()
         self.pressed_key = "."
 
-    def handle_key(self, action):
+    def handle_keypress(self, key):
+        if self.pressed_key is not key:
+            self.keyboard.release_key(self.pressed_key)
+            self.pressed_key = key
+
+        self.keyboard.press_key(self.pressed_key)
+
+    def handle_action(self, action):
         """ Key press handler for each action. """
         if action == 0:
-            self.pressed_key = " "
-            self.keyboard.press_key(" ")
+            self.handle_keypress(" ")
         elif action == 1:
-            self.pressed_key = self.keyboard.down_key
-            self.keyboard.press_key(self.keyboard.down_key)
+            self.handle_keypress(self.keyboard.down_key)
         else:
             self.keyboard.release_key(self.pressed_key)
 
@@ -41,9 +46,9 @@ class ConvNetAgent(object):
         # If very confident, then take the action. Otherwise, just run.
         # TODO: Could be better if we could proceed with last confident action.
         if np.any(action_confidences > threshold):
-            self.handle_key(action_confidences.argmax())
+            self.handle_action(action_confidences.argmax())
         else:
-            self.handle_key(2)
+            self.handle_action(2)
 
         return action_confidences
 
@@ -58,16 +63,15 @@ class ConvNetAgent(object):
         # Resize for neural net.
         image_resize = cv2.resize(
             image_gray, (image_gray.shape[1] // 4, image_gray.shape[0] // 4),
-            interpolation=cv2.INTER_NEAREST)
+            interpolation=cv2.INTER_NEAREST
+        )
 
         # Predict the action.
         action_confidences = self.act(image_resize)
         # Print confidence barplots on image.
         for i, confidence in enumerate(action_confidences):
-            cv2.rectangle(
-                work_image, (10*i+10, int(60-50*confidence)), (10*i+19, 60),
-                self.action_colors[i], -1
-            )
+            cv2.rectangle(work_image, (10*i+10, int(60-50*confidence)),
+                          (10*i+19, 60), self.action_colors[i], -1)
             cv2.putText(work_image, self.action_lut[i][0], (10*i+10, 72),
                         cv2.FONT_HERSHEY_PLAIN, 1, self.action_colors[i])
 
@@ -89,7 +93,7 @@ if __name__ == "__main__":
         while True:
             im = grab_screen(FRAME_X, FRAME_Y, FRAME_X + 600, FRAME_Y + 150)
             im_processed = agent.process_image(im)
-            cv2.imshow('ConvNetAgent', im_processed)
+            cv2.imshow(main_window_name, im_processed)
 
             # This needs to be here! Too fast and the OS will crash.
             time.sleep(1/90.)
