@@ -9,17 +9,26 @@ from grabber import grab_screen
 
 class ConvNetAgent(object):
     def __init__(self, model_path):
-        self.action_lut = ['Jump', 'Duck', 'Run']
+        """ Agent constructor. Takes a path to the desired model. """
+        self.action_lut = ['J', 'D', 'R']
         self.action_colors = [
-            (0, 128, 0),
-            (0, 0, 255),
-            (255, 0, 0)
+            (0, 128, 0),  # Dark green
+            (0, 0, 255),  # Red
+            (255, 0, 0)   # Blue
         ]
         self.conv_net = keras.models.load_model(model_path)
         self.keyboard = PyKeyboard()
         self.pressed_key = "."
 
     def handle_keypress(self, key):
+        """ Keypress handler. We probably don't want to erratically press keys.
+        If the registered key on the current frame is the key that is currently
+        pressed, don't release key
+        """
+        # Failsafe
+        if self.pressed_key is ".":
+            return
+
         if self.pressed_key is not key:
             self.keyboard.release_key(self.pressed_key)
             self.pressed_key = key
@@ -70,8 +79,13 @@ class ConvNetAgent(object):
         action_confidences = self.act(image_resize)
         # Print confidence barplots on image.
         for i, confidence in enumerate(action_confidences):
-            cv2.rectangle(work_image, (10*i+10, int(60-50*confidence)),
-                          (10*i+19, 60), self.action_colors[i], -1)
+            bar_x1 = 10 * i + 10
+            bar_x2 = 10 * i + 19
+            bar_y1 = int(60 - 50 * confidence)
+            bar_y2 = 60
+
+            cv2.rectangle(work_image, (bar_x1, bar_y1), (bar_x2, bar_y2),
+                          self.action_colors[i], -1)
             cv2.putText(work_image, self.action_lut[i][0], (10*i+10, 72),
                         cv2.FONT_HERSHEY_PLAIN, 1, self.action_colors[i])
 
@@ -79,7 +93,7 @@ class ConvNetAgent(object):
 
 
 if __name__ == "__main__":
-    agent = ConvNetAgent()
+    agent = ConvNetAgent('./models/DinoBot.h5')
     main_window_name = "ConvNetAgent"
     cv2.namedWindow(main_window_name)
     cv2.moveWindow(main_window_name, 150, 400)
@@ -100,8 +114,9 @@ if __name__ == "__main__":
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 cv2.destroyAllWindows()
-                agent.handle_key(2)
+                agent.handle_keypress(2)
                 break
 
     except KeyboardInterrupt:
         cv2.destroyAllWindows()
+        agent.handle_keypress(2)
