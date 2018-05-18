@@ -41,6 +41,14 @@ interfaces:
 
 ## How it Works
 
+### Keyboard-Logging (KL) Agent
+
+The KL Agent is not a game playing-agent, but instead is a data collection
+agent which interfaces with the user inputs as they play the game. The agent
+collects grayscale images of the game area (sized down to quarter size) and the
+corresponding action at that frame. ~~The images and action vectors are then
+stored in an `.npz` file.~~ Saving as `.npy` files are more performant.
+
 ### Computer Vision (CV) Agent
 
 The CV Agent a simple computer vision AI which finds the bounding boxes of
@@ -57,13 +65,28 @@ no time-based measures are taken (i.e. convolving over time on multiple
 consecutive frames). The agent also shows the confidence of the predictions as
 bar plots on the top-left hand corner of the agent screen.
 
-### Keyboard-Logging (KL) Agent
+The convolutional net used in this agent is a variant of the ZF Net presented
+by [Zeiler and Fergus (2013)](https://arxiv.org/abs/1311.2901) with the number
+of filters reduced to fit the problem at hand. More details of the net can be
+found by exploring the model in Keras.
 
-The KL Agent is not a game playing-agent, but instead is a data collection
-agent which interfaces with the user inputs as they play the game. The agent
-collects grayscale images of the game area (sized down to quarter size) and the
-corresponding action at that frame. ~~The images and action vectors are then
-stored in an `.npz` file.~~ Saving as `.npy` files are more performant.
+### Strided Convolutional Net (CS) Agent
+
+The CS agent is similar to the CN agent in that it uses the same collected
+images from the KL agent; but rather than predicting based on a single frame,
+the CS agent predicts on a history of 5 frames and predicts the action to be
+done on the 5th (latest) frame.
+
+The CS agent's convolutional neural net was inspired by
+[Mnih et al. (2013)](https://arxiv.org/abs/1312.5602); who featured a smaller
+convolutional network (than the (CN agent's) and is used in a Q-learning
+algorithm. Turned out it works well for supervised learning too.
+
+*This is the best performing agent so far.*
+
+## Train Agent Models
+
+Trained models can be found in the releases.
 
 ## Wishlist
 
@@ -71,7 +94,11 @@ This started as a OpenCV weekend exercise which went real. I want to see what
 the limits of ML are just based on captured images, rather than having
 "physics data" from the actual game. Things I'd like to try out:
 
-- [x] Train an OpenCV agent. *Implemented `agent_cv.py`.*
+- [x] Train an OpenCV agent.
+  - *Implemented `agent_cv.py`.*
+
 - [x] Train a conv net with supervised learning using ~50000 images.
-*Implemented `agent_cn.py` and the `DinoBot.h5` Keras model.*
+  - *Implemented `agent_cn.py` and the `DinoBot.h5` Keras model.*
+  - *Implemented `agent_cs.py` and the `DinoBotS.h5` Keras model.*
+
 - [ ] Train a conv net with policy gradients.
