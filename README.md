@@ -33,8 +33,7 @@ The AI also uses typical Python libraries for matrix manipulations and keypress
 interfaces:
 
 - `numpy >= 1.12`: matrix handling
-- `keras == 2.1.6`: deep learning library.
-*Important: the models can only be loaded on this version of Keras.*
+- `keras == 2.1.6`: deep learning library. *NB: Needed to load trained models.*
 - `opencv >= 3.1.0`: fast image processing
 - PyUserInput `== 0.1.11`: automating user input to global windows
 - `pyxhook` for Python 3: global user inputs capturing for X11 environment
