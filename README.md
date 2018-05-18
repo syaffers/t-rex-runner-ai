@@ -13,8 +13,8 @@ Compile the C library `prtscr.c` for fast screen capture in X11 environments
     # gcc -shared -O3 -fPIC -Wl,-soname,prtscn -o prtscn.so prtscn.c -lX11
 
 **Note:** The screen capture library can be too fast for some computers. Make
-sure you add a delay using `time.sleep()` to prevent crashes. `agent_cv.py` has
-this already coded-in.
+sure you add a delay using `time.sleep()` to prevent crashes if you are using
+this library for your personal projects.
 
 Run the agent, point to your browser window and run the game (you might want to
 adjust the `FRAME_X` and `FRAME_Y` position of the screen capture window to
@@ -85,7 +85,7 @@ algorithm. Turned out it works well for supervised learning too.
 
 ## Train Agent Models
 
-Trained models can be found in the releases.
+Trained models can be found in the recent [releases](https://github.com/syaffers/t-rex-runner-ai/releases).
 
 ## Wishlist
 
