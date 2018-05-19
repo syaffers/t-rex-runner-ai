@@ -59,31 +59,28 @@ objects flying higher than the T-rex.
 
 The CN agent uses labelled images to predict the action on a particular frame.
 Using the training data collected by the KL agent, we have an image-action pair
-which can be subjected to a normal supervised learning optimization. Currently,
-no time-based measures are taken (i.e. convolving over time on multiple
-consecutive frames). The agent also shows the confidence of the predictions as
-bar plots on the top-left hand corner of the agent screen.
+which can be subjected to a normal supervised learning optimization. The agent
+also shows the confidence of the predictions as bar plots on the top-left hand
+corner of the agent's screen.
 
 The convolutional net used in this agent is a variant of the ZF Net presented
 by [Zeiler and Fergus (2013)](https://arxiv.org/abs/1311.2901) with the number
-of filters reduced to fit the problem at hand. More details of the net can be
-found by exploring the model in Keras.
+of filters reduced to fit the problem at hand. This conv net predicts on a
+single image frame the action that needs to be executed. More details of the
+net can be found by exploring the model in Keras.
 
-### Strided Convolutional Net (CS) Agent
-
-The CS agent is similar to the CN agent in that it uses the same collected
-images from the KL agent; but rather than predicting based on a single frame,
-the CS agent predicts on a history of 5 frames and predicts the action to be
-done on the 5th (latest) frame.
-
-The CS agent's convolutional neural net was inspired by
+Another variant of the CN agent is also implemented to predict the action of
+the the lastest of 5 frames. The 5 most recent frames are stacked and then
+passed through the net. This convolutional net was inspired by
 [Mnih et al. (2013)](https://arxiv.org/abs/1312.5602); who featured a smaller
-convolutional network (than the (CN agent's) and is used in a Q-learning
-algorithm. Turned out it works well for supervised learning too.
+convolutional network (than ZF Net) and is used in a Q-learning algorithm.
+Turned out it works well for supervised learning too. *This is the best
+performing agent so far.*
 
-*This is the best performing agent so far.*
+To switch between the two agents, switch out the commented lines in the bottom
+section of `agent_cn.py`.
 
-## Train Agent Models
+## Trained Agent Models
 
 Trained models can be found in the recent [releases](https://github.com/syaffers/t-rex-runner-ai/releases).
 
@@ -97,7 +94,7 @@ the limits of ML are just based on captured images, rather than having
   - *Implemented `agent_cv.py`.*
 
 - [x] Train a conv net with supervised learning using ~50000 images.
-  - *Implemented `agent_cn.py` and the `DinoBot.h5` Keras model.*
-  - *Implemented `agent_cs.py` and the `DinoBotS.h5` Keras model.*
+  - *Implemented `agent_cn.py`, and trained the `DinoBot.h5` and `DinoBotS.h5`
+  Keras models.*
 
 - [ ] Train a conv net with policy gradients.

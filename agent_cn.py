@@ -1,3 +1,4 @@
+from collections import deque
 import time
 import cv2
 import keras
@@ -8,8 +9,10 @@ from grabber import grab_screen
 
 
 class ConvNetAgent(object):
-    def __init__(self, model_path):
-        """ Agent constructor. Takes a path to the desired model. """
+    def __init__(self, model_path, memory_size):
+        """ Agent constructor. Takes arguments of 1) path to the desired model,
+        and 2) the memory size of the convolutional net.
+        """
         self.action_lut = ['J', 'D', 'R']
         self.action_colors = [
             (0, 128, 0),  # Dark green
@@ -17,18 +20,17 @@ class ConvNetAgent(object):
             (255, 0, 0)   # Blue
         ]
         self.conv_net = keras.models.load_model(model_path)
+        self.is_paused = False
         self.keyboard = PyKeyboard()
+        self.memory_size = memory_size
+        self.memory = deque([], maxlen=memory_size)
         self.pressed_key = "."
 
     def handle_keypress(self, key):
         """ Keypress handler. We probably don't want to erratically press keys.
         If the registered key on the current frame is the key that is currently
-        pressed, don't release key
+        pressed, don't release key.
         """
-        # Failsafe
-        if self.pressed_key is ".":
-            return
-
         if self.pressed_key is not key:
             self.keyboard.release_key(self.pressed_key)
             self.pressed_key = key
@@ -44,16 +46,17 @@ class ConvNetAgent(object):
         else:
             self.keyboard.release_key(self.pressed_key)
 
-    def act(self, image, threshold=0.5):
+    def act(self, threshold=0.5):
         """ Decision-making happens here. Based on the input image, the conv
-        net needs to decide on the best course of action.
+        net needs to decide on the action it is most confident with. Threshold
+        the confidence so it's not too erratic.
         """
         # Reshape for Keras.
-        work_image = image.reshape((1, 37, 150, 1))
+        work_image = np.rollaxis(np.array(self.memory), 0, 3)
+        work_image = work_image.reshape((1, 37, 150, self.memory_size))
         action_confidences = self.conv_net.predict(work_image).flatten()
 
         # If very confident, then take the action. Otherwise, just run.
-        # TODO: Could be better if we could proceed with last confident action.
         if np.any(action_confidences > threshold):
             self.handle_action(action_confidences.argmax())
         else:
@@ -75,25 +78,35 @@ class ConvNetAgent(object):
             interpolation=cv2.INTER_NEAREST
         )
 
-        # Predict the action.
-        action_confidences = self.act(image_resize)
-        # Print confidence barplots on image.
-        for i, confidence in enumerate(action_confidences):
-            bar_x1 = 10 * i + 10
-            bar_x2 = 10 * i + 19
-            bar_y1 = int(60 - 50 * confidence)
-            bar_y2 = 60
+        self.memory.append(image_resize)
 
-            cv2.rectangle(work_image, (bar_x1, bar_y1), (bar_x2, bar_y2),
-                          self.action_colors[i], -1)
-            cv2.putText(work_image, self.action_lut[i][0], (10*i+10, 72),
-                        cv2.FONT_HERSHEY_PLAIN, 1, self.action_colors[i])
+        # Pause for safety.
+        if self.is_paused:
+            cv2.putText(work_image, "Paused", (10, 10),
+                        cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255))
+            return work_image
+
+        if len(self.memory) >= self.memory_size:
+            # Predict the action.
+            action_confidences = self.act()
+            # Print confidence barplots on image.
+            for i, confidence in enumerate(action_confidences):
+                bar_x1 = 10 * i + 10
+                bar_x2 = 10 * i + 19
+                bar_y1 = int(60 - 50 * confidence)
+                bar_y2 = 60
+
+                cv2.rectangle(work_image, (bar_x1, bar_y1), (bar_x2, bar_y2),
+                            self.action_colors[i], -1)
+                cv2.putText(work_image, self.action_lut[i][0], (10*i+10, 72),
+                            cv2.FONT_HERSHEY_PLAIN, 1, self.action_colors[i])
 
         return work_image
 
 
 if __name__ == "__main__":
-    agent = ConvNetAgent('./models/DinoBot.h5')
+    agent = ConvNetAgent('./models/DinoBotS.h5', 5)  # Strided conv net
+    # agent = ConvNetAgent('./models/DinoBot.h5', 1) # Single-frame conv net
     main_window_name = "ConvNetAgent"
     cv2.namedWindow(main_window_name)
     cv2.moveWindow(main_window_name, 150, 400)
@@ -112,11 +125,17 @@ if __name__ == "__main__":
             # This needs to be here! Too fast and the OS will crash.
             time.sleep(1/90.)
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv_key = cv2.waitKey(1) & 0xFF
+
+            if cv_key == ord('s'):
+                agent.is_paused = not agent.is_paused
+                agent.keyboard.release_key(agent.pressed_key)
+
+            if cv_key == ord('q'):
                 cv2.destroyAllWindows()
-                agent.handle_keypress(2)
+                agent.keyboard.release_key(agent.pressed_key)
                 break
 
     except KeyboardInterrupt:
         cv2.destroyAllWindows()
-        agent.handle_keypress(2)
+        agent.keyboard.release_key(agent.pressed_key)
