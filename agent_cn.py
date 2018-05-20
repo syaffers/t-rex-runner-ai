@@ -9,7 +9,7 @@ from grabber import grab_screen
 
 
 class ConvNetAgent(object):
-    def __init__(self, model_path, memory_size):
+    def __init__(self, keras_model, memory_size):
         """ Agent constructor. Takes arguments of 1) path to the desired model,
         and 2) the memory size of the convolutional net.
         """
@@ -19,7 +19,7 @@ class ConvNetAgent(object):
             (0, 0, 255),  # Red
             (255, 0, 0)   # Blue
         ]
-        self.conv_net = keras.models.load_model(model_path)
+        self.conv_net = keras_model
         self.is_paused = False
         self.keyboard = PyKeyboard()
         self.memory_size = memory_size
@@ -105,8 +105,10 @@ class ConvNetAgent(object):
 
 
 if __name__ == "__main__":
-    agent = ConvNetAgent('./models/DinoBotS.h5', 5)  # Strided conv net
-    # agent = ConvNetAgent('./models/DinoBot.h5', 1) # Single-frame conv net
+    model = keras.models.load_model('./models/DinoBotS_v2.h5')
+    channel_size = model.input.shape[-1].value
+    agent = ConvNetAgent(model, channel_size)
+
     main_window_name = "ConvNetAgent"
     cv2.namedWindow(main_window_name)
     cv2.moveWindow(main_window_name, 150, 400)
@@ -123,7 +125,7 @@ if __name__ == "__main__":
             cv2.imshow(main_window_name, im_processed)
 
             # This needs to be here! Too fast and the OS will crash.
-            time.sleep(1/90.)
+            # time.sleep(1/100.)
 
             cv_key = cv2.waitKey(1) & 0xFF
 

@@ -96,5 +96,6 @@ the limits of ML are just based on captured images, rather than having
 - [x] Train a conv net with supervised learning using ~50000 images.
   - *Implemented `agent_cn.py`, and trained the `DinoBot.h5` and `DinoBotS.h5`
   Keras models.*
+  - *Made smaller conv net models of `DinoBot` and `DinoBotS`.*
 
 - [ ] Train a conv net with policy gradients.
