@@ -4,7 +4,6 @@ import cv2
 from pykeyboard import PyKeyboard
 from config import FRAME_X, FRAME_Y
 from grabber import grab_screen
-from image_tricks import auto_canny_params
 
 
 class CVAgent(object):
@@ -15,6 +14,18 @@ class CVAgent(object):
         self.keyboard = PyKeyboard()
         self.last_closest_x = 0
         self.last_closest_y = 0
+
+    # Courtesy of https://www.pyimagesearch.com/2015/04/06/zero-parameter-automatic-canny-edge-detection-with-python-and-opencv/
+    def auto_canny_params(self, image, sigma=0.33):
+        """ Get automatic parameters for the Canny filter for best edge
+        results.
+        """
+        v = np.median(image)
+
+        lower = int(max(0, (1.0 - sigma) * v))
+        upper = int(max(255, (1.0 + sigma) * v))
+
+        return lower, upper
 
     def long_press_key(self, key):
         """ Kind-of async long-press jump function. Agent will press space for
@@ -77,7 +88,7 @@ class CVAgent(object):
 
         # Detect edges of objects.
         image_blur = cv2.GaussianBlur(image_gray, (7, 7), 0)
-        lower, upper = auto_canny_params(image_blur)
+        lower, upper = self.auto_canny_params(image_blur)
         image_edge = cv2.Canny(image_blur, lower, upper, apertureSize=3)
 
         # Find contours.
@@ -92,9 +103,9 @@ class CVAgent(object):
 
             if box_w + box_h > 10:
                 cv2.rectangle(work_image,
-                            (box_x, box_y),
-                            (box_x + box_w, box_y + box_h),
-                            (0, 128, 0), 2)
+                              (box_x, box_y),
+                              (box_x + box_w, box_y + box_h),
+                              (0, 128, 0), 2)
 
                 if box_x < closest_x:
                     closest_x = box_x
@@ -113,7 +124,7 @@ class CVAgent(object):
 
 if __name__ == "__main__":
     agent = CVAgent()
-    main_window_name = "CompVisionAgent"
+    main_window_name = "ComputerVisionAgent"
     cv2.namedWindow(main_window_name)
     cv2.moveWindow(main_window_name, 150, 400)
 
@@ -129,7 +140,7 @@ if __name__ == "__main__":
         cv2.imshow(main_window_name, im_processed)
 
         # This needs to be here! Too fast and the OS will crash.
-        time.sleep(1/50)
+        time.sleep(1/60.)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
