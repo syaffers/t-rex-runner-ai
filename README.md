@@ -5,8 +5,6 @@ on Windows or Mac OSX.
 
 ## Quickstart
 
-$$ \kappa i \because j \in \mathbb{X} $$
-
 Compile the C library `prtscr.c` for fast screen capture in X11 environments
 (courtesy of [this SO answer](https://stackoverflow.com/a/16141058])).
 
