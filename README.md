@@ -25,14 +25,14 @@ adapt for your monitor in `config.py`).
 ### Frame Sampling Rate Issues
 
 It seems that the agents perform well on certain framerates. This is possibly
-due to the sampling rate of the KL Agent during data collection which was\
-configured with a `time.sleep()` delay of $\frac{1}{100}$. With the additional
+due to the sampling rate of the KL Agent during data collection which was
+configured with a `time.sleep()` delay of 1/100. With the additional
 preprocessing of the image, it is likely that additional lag was introduced
 into the time delta between frames.
 
-The optimal framerate that seems to be consistent over my PCs is
-$\frac{1}{90}$. It may be better to try other values if the agent is not
-performing well on yours.
+The optimal framerate that seems to be consistent over my PCs is by having a
+delay of 1/90. It may be better to try other values if the agent is not
+performing well on your system.
 
 ## Dependencies
 
