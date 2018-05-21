@@ -125,7 +125,7 @@ if __name__ == "__main__":
             cv2.imshow(main_window_name, im_processed)
 
             # This needs to be here! Too fast and the OS will crash.
-            # time.sleep(1/100.)
+            time.sleep(1/90.)
 
             cv_key = cv2.waitKey(1) & 0xFF
 

@@ -5,6 +5,8 @@ on Windows or Mac OSX.
 
 ## Quickstart
 
+$$ \kappa i \because j \in \mathbb{X} $$
+
 Compile the C library `prtscr.c` for fast screen capture in X11 environments
 (courtesy of [this SO answer](https://stackoverflow.com/a/16141058])).
 
@@ -21,6 +23,18 @@ adjust the `FRAME_X` and `FRAME_Y` position of the screen capture window to
 adapt for your monitor in `config.py`).
 
     python agent_cv.py
+
+### Frame Sampling Rate Issues
+
+It seems that the agents perform well on certain framerates. This is possibly
+due to the sampling rate of the KL Agent during data collection which was\
+configured with a `time.sleep()` delay of $\frac{1}{100}$. With the additional
+preprocessing of the image, it is likely that additional lag was introduced
+into the time delta between frames.
+
+The optimal framerate that seems to be consistent over my PCs is
+$\frac{1}{90}$. It may be better to try other values if the agent is not
+performing well on yours.
 
 ## Dependencies
 
